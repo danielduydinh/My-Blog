@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -91,7 +91,13 @@ const sidebar = {
 
 export default function Blog() {
   const classes = useStyles();
+  const [currentTime, setCurrentTime] = useState(0);
 
+  useEffect(() => {
+    fetch('/time').then(res => res.json()).then(data => {
+      setCurrentTime(data.time);
+    });
+  }, []);
   return (
     <React.Fragment>
       <CssBaseline />
@@ -105,7 +111,8 @@ export default function Blog() {
             ))}
           </Grid>
           <Grid container spacing={5} className={classes.mainGrid}>
-            <Main title="From the firehose" posts={posts} />
+            <Main title="What time is it?" posts={posts} />
+            <p>It is {currentTime}</p>
             <Sidebar
               title={sidebar.title}
               description={sidebar.description}
