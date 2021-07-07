@@ -15,6 +15,7 @@ import Footer from './Footer';
 import post1 from './blog-post.1.md';
 import post2 from './blog-post.2.md';
 import post3 from './blog-post.3.md';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   mainGrid: {
@@ -92,12 +93,23 @@ const sidebar = {
 export default function Blog() {
   const classes = useStyles();
   const [currentTime, setCurrentTime] = useState(0);
+  const [getMessage, setGetMessage] = useState({});
 
   useEffect(() => {
     fetch('/time').then(res => res.json()).then(data => {
       setCurrentTime(data.time);
     });
   }, []);
+
+  useEffect(()=>{
+    axios.get('http://localhost:5000/flask/hello').then(response => {
+      console.log("SUCCESS", response)
+      setGetMessage(response)
+    }).catch(error => {
+      console.log(error)
+    })
+  }, []);
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -113,6 +125,10 @@ export default function Blog() {
           <Grid container spacing={5} className={classes.mainGrid}>
             <Main title="What time is it?" posts={posts} />
             <p>It is {currentTime}</p>
+            <div>{getMessage.status === 200 ? 
+              <h3>{getMessage.data.message}</h3>
+              :
+              <h3>LOADING</h3>}</div>
             <Sidebar
               title={sidebar.title}
               description={sidebar.description}
